@@ -1,13 +1,103 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+
+import { Brain, TrendingUp, Users, MessageCircle, Target, Zap } from "lucide-react"
+import { SidebarProvider } from "@/components/ui/sidebar"
+import { AppSidebar } from "@/components/AppSidebar"
+import { Header } from "@/components/Header"
+import { AIInsightCard } from "@/components/AIInsightCard"
+import { SentimentChart } from "@/components/SentimentChart"
+import { PlatformFeed } from "@/components/PlatformFeed"
+import { InfluencerHub } from "@/components/InfluencerHub"
 
 const Index = () => {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold mb-4">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
+    <SidebarProvider>
+      <div className="min-h-screen flex w-full bg-background">
+        <AppSidebar />
+        <div className="flex-1 flex flex-col">
+          <Header />
+          <main className="flex-1 p-6 space-y-6">
+            {/* Hero Section */}
+            <div className="text-center mb-8">
+              <h1 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary via-blue-500 to-cyan-500 bg-clip-text text-transparent">
+                AI-Powered Social Intelligence
+              </h1>
+              <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+                Monitor, analyze, and amplify your brand across all social platforms with advanced AI insights
+              </p>
+            </div>
+
+            {/* AI Insights Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <AIInsightCard
+                title="Total Mentions"
+                value="24,891"
+                change="+12.5% from last week"
+                changeType="positive"
+                icon={<MessageCircle className="w-4 h-4 text-white" />}
+                gradient="primary"
+              />
+              <AIInsightCard
+                title="Sentiment Score"
+                value="84%"
+                change="+8.2% improvement"
+                changeType="positive"
+                icon={<Brain className="w-4 h-4 text-white" />}
+                gradient="secondary"
+              />
+              <AIInsightCard
+                title="Influencer Reach"
+                value="2.3M"
+                change="+15.8% growth"
+                changeType="positive"
+                icon={<Users className="w-4 h-4 text-white" />}
+                gradient="accent"
+              />
+              <AIInsightCard
+                title="Campaign ROI"
+                value="340%"
+                change="+24% this month"
+                changeType="positive"
+                icon={<Target className="w-4 h-4 text-white" />}
+                gradient="primary"
+              />
+            </div>
+
+            {/* Sentiment Analysis */}
+            <SentimentChart />
+
+            {/* Main Content Grid */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <PlatformFeed />
+              <InfluencerHub />
+            </div>
+
+            {/* AI Predictions Card */}
+            <div className="bg-gradient-to-r from-purple-600/10 via-blue-600/10 to-cyan-600/10 rounded-xl p-6 border border-primary/20">
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2 gradient-primary rounded-lg animate-glow">
+                  <Zap className="w-5 h-5 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold">AI Predictions</h3>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="p-4 bg-card/50 rounded-lg border border-border">
+                  <h4 className="font-medium mb-2 text-green-400">Trending Topic</h4>
+                  <p className="text-sm text-muted-foreground">"Sustainable Tech" will peak in 3 days with 85% confidence</p>
+                </div>
+                <div className="p-4 bg-card/50 rounded-lg border border-border">
+                  <h4 className="font-medium mb-2 text-blue-400">Optimal Posting</h4>
+                  <p className="text-sm text-muted-foreground">Best engagement window: Today 2-4 PM (+34% reach)</p>
+                </div>
+                <div className="p-4 bg-card/50 rounded-lg border border-border">
+                  <h4 className="font-medium mb-2 text-purple-400">Risk Alert</h4>
+                  <p className="text-sm text-muted-foreground">Monitor competitor campaign launching tomorrow</p>
+                </div>
+              </div>
+            </div>
+          </main>
+        </div>
       </div>
-    </div>
+    </SidebarProvider>
   );
 };
 
