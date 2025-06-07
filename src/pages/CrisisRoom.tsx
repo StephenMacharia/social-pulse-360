@@ -1,4 +1,3 @@
-
 import { AlertTriangle, TrendingDown, TrendingUp, Clock, Users, MessageSquare } from "lucide-react"
 import { SidebarProvider } from "@/components/ui/sidebar"
 import { AppSidebar } from "@/components/AppSidebar"
@@ -14,7 +13,7 @@ const CrisisRoom = () => {
   const activeAlerts = [
     {
       id: 1,
-      level: "critical",
+      level: "critical" as const,
       title: "Negative Sentiment Spike",
       description: "84% increase in negative mentions in the last 2 hours",
       platform: "Twitter",
@@ -24,7 +23,7 @@ const CrisisRoom = () => {
     },
     {
       id: 2,
-      level: "warning",
+      level: "warning" as const,
       title: "Unusual Activity Pattern",
       description: "3x normal volume of mentions detected",
       platform: "Reddit",
@@ -34,7 +33,7 @@ const CrisisRoom = () => {
     },
     {
       id: 3,
-      level: "info",
+      level: "info" as const,
       title: "Competitor Campaign Launch",
       description: "Major competitor started trending campaign",
       platform: "Instagram",
