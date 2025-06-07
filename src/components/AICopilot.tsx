@@ -81,7 +81,7 @@ export function AICopilot() {
     return (
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed top-1/2 left-6 -translate-y-1/2 bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-lg z-50 rounded-full p-4"
+        className="fixed bottom-6 left-6 bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-lg z-50 rounded-full p-4"
       >
         <Bot className="w-6 h-6" />
       </Button>
@@ -91,7 +91,7 @@ export function AICopilot() {
   // Minimized state
   if (isMinimized) {
     return (
-      <div className="fixed top-1/2 left-6 -translate-y-1/2 z-50">
+      <div className="fixed bottom-6 left-6 z-50">
         <Button
           onClick={() => setIsMinimized(false)}
           className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-lg rounded-full p-3"
@@ -104,7 +104,7 @@ export function AICopilot() {
 
   // Expanded chat
   return (
-    <Card className="fixed top-1/2 left-6 -translate-y-1/2 w-80 h-96 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-gray-300 dark:border-gray-700 shadow-2xl rounded-xl overflow-hidden flex flex-col">
+    <Card className="fixed bottom-6 left-6 w-80 h-96 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-gray-300 dark:border-gray-700 shadow-2xl rounded-xl overflow-hidden flex flex-col">
       <CardHeader className="pb-2 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-sm text-gray-800 dark:text-gray-100">
