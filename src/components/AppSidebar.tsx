@@ -11,7 +11,8 @@ import {
   Zap,
   TrendingUp,
   Target,
-  Search
+  Search,
+  AlertTriangle
 } from "lucide-react"
 
 import {
@@ -40,6 +41,10 @@ const toolsItems = [
   { title: "Trends", url: "/trends", icon: TrendingUp },
   { title: "Campaigns", url: "/campaigns", icon: Target },
   { title: "Search", url: "/search", icon: Search },
+]
+
+const crisisItems = [
+  { title: "Crisis Room", url: "/crisis", icon: AlertTriangle },
 ]
 
 export function AppSidebar() {
@@ -83,6 +88,30 @@ export function AppSidebar() {
                       to={item.url} 
                       end
                       className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 ${getNavClass(item.url)}`}
+                    >
+                      <item.icon className="w-4 h-4 flex-shrink-0" />
+                      {!collapsed && <span className="font-medium">{item.title}</span>}
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel className="text-xs font-semibold text-muted-foreground px-4">
+            {!collapsed ? "CRISIS CONTROL" : ""}
+          </SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {crisisItems.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild className="mb-1">
+                    <NavLink 
+                      to={item.url} 
+                      end
+                      className={`flex items-center gap-3 px-3 py-2 rounded-lg transition-all duration-200 ${getNavClass(item.url)} ${isActive(item.url) ? '' : 'text-orange-400 hover:text-orange-300'}`}
                     >
                       <item.icon className="w-4 h-4 flex-shrink-0" />
                       {!collapsed && <span className="font-medium">{item.title}</span>}
