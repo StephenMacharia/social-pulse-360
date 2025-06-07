@@ -1,11 +1,14 @@
-
 import { useState } from "react"
-import { Bot, X, Lightbulb, TrendingUp, AlertCircle, Send, Minimize2, Maximize2 } from "lucide-react"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import {
+  Bot, X, Lightbulb, TrendingUp, AlertCircle,
+  Send, Minimize2
+} from "lucide-react"
+import {
+  Card, CardContent, CardHeader, CardTitle
+} from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
-import { Drawer, DrawerContent, DrawerHeader, DrawerTitle, DrawerTrigger } from "@/components/ui/drawer"
 
 interface Suggestion {
   id: number
@@ -17,10 +20,10 @@ interface Suggestion {
 }
 
 export function AICopilot() {
-  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen, setIsOpen] = useState(true)
   const [isMinimized, setIsMinimized] = useState(false)
   const [message, setMessage] = useState("")
-  
+
   const suggestions: Suggestion[] = [
     {
       id: 1,
@@ -48,7 +51,7 @@ export function AICopilot() {
       id: 4,
       type: "tip",
       title: "Optimal Posting Time",
-      description: "Based on your audience analysis, posting in 2 hours will maximize engagement by 23%.",
+      description: "Posting in 2 hours will maximize engagement by 23%.",
       confidence: 82
     }
   ]
@@ -73,23 +76,25 @@ export function AICopilot() {
     }
   }
 
+  // Closed state (floating icon button)
   if (!isOpen) {
     return (
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 gradient-primary text-white shadow-lg z-50 rounded-full p-4"
+        className="fixed bottom-6 right-6 bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-lg z-50 rounded-full p-4"
       >
         <Bot className="w-6 h-6" />
       </Button>
     )
   }
 
+  // Minimized state
   if (isMinimized) {
     return (
       <div className="fixed bottom-6 right-6 z-50">
         <Button
           onClick={() => setIsMinimized(false)}
-          className="gradient-primary text-white shadow-lg rounded-full p-3"
+          className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-lg rounded-full p-3"
         >
           <Bot className="w-5 h-5" />
         </Button>
@@ -97,12 +102,13 @@ export function AICopilot() {
     )
   }
 
+  // Expanded chat
   return (
-    <Card className="fixed bottom-6 right-6 w-80 h-96 z-50 glass border-primary/20 shadow-2xl">
-      <CardHeader className="pb-2">
+    <Card className="fixed bottom-6 right-6 w-80 h-96 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-gray-300 dark:border-gray-700 shadow-2xl rounded-xl overflow-hidden flex flex-col">
+      <CardHeader className="pb-2 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
-            <div className="p-1 gradient-primary rounded-lg">
+          <CardTitle className="flex items-center gap-2 text-sm text-gray-800 dark:text-gray-100">
+            <div className="p-1 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-md">
               <Bot className="w-4 h-4 text-white" />
             </div>
             AI Copilot
@@ -127,28 +133,25 @@ export function AICopilot() {
           </div>
         </div>
       </CardHeader>
-      
-      <CardContent className="p-4 pt-0 flex flex-col h-full">
+
+      <CardContent className="p-3 pt-2 flex flex-col h-full">
         {/* Suggestions */}
-        <div className="flex-1 overflow-y-auto space-y-3 mb-4">
-          {suggestions.map((suggestion) => (
+        <div className="flex-1 overflow-y-auto space-y-3 mb-3 pr-1">
+          {suggestions.map((s) => (
             <div
-              key={suggestion.id}
-              className={`p-3 rounded-lg border ${getTypeColor(suggestion.type)} ${
-                suggestion.urgent ? 'animate-pulse' : ''
+              key={s.id}
+              className={`p-3 rounded-md border text-sm ${getTypeColor(s.type)} ${
+                s.urgent ? 'animate-pulse' : ''
               }`}
             >
               <div className="flex items-start gap-2 mb-2">
-                {getTypeIcon(suggestion.type)}
+                {getTypeIcon(s.type)}
                 <div className="flex-1">
-                  <h4 className="font-medium text-sm">{suggestion.title}</h4>
-                  <p className="text-xs text-muted-foreground mt-1">{suggestion.description}</p>
+                  <h4 className="font-semibold text-xs">{s.title}</h4>
+                  <p className="text-xs text-gray-600 dark:text-gray-300 mt-1">{s.description}</p>
                 </div>
-                <Badge variant="outline" className="text-xs">
-                  {suggestion.confidence}%
-                </Badge>
+                <Badge variant="outline" className="text-[10px]">{s.confidence}%</Badge>
               </div>
-              
               <div className="flex gap-2 mt-2">
                 <Button size="sm" variant="outline" className="text-xs h-6">
                   Accept
@@ -161,7 +164,7 @@ export function AICopilot() {
           ))}
         </div>
 
-        {/* Chat Input */}
+        {/* Input */}
         <div className="flex gap-2">
           <Input
             placeholder="Ask AI anything..."
@@ -170,12 +173,12 @@ export function AICopilot() {
             className="text-sm"
             onKeyPress={(e) => {
               if (e.key === 'Enter') {
-                // Handle message send
+                // Send message logic here
                 setMessage("")
               }
             }}
           />
-          <Button size="icon" className="gradient-primary text-white">
+          <Button size="icon" className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white">
             <Send className="w-4 h-4" />
           </Button>
         </div>

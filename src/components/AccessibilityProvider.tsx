@@ -1,7 +1,14 @@
-
 import React, { createContext, useContext, useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Eye, Mic, MicOff, Palette } from 'lucide-react'
+import { Mic, MicOff, Palette } from 'lucide-react'
+
+// Extend window for speech recognition support
+declare global {
+  interface Window {
+    webkitSpeechRecognition: any
+    SpeechRecognition: any
+  }
+}
 
 interface AccessibilityContextType {
   highContrast: boolean
@@ -28,28 +35,26 @@ interface AccessibilityProviderProps {
 export function AccessibilityProvider({ children }: AccessibilityProviderProps) {
   const [highContrast, setHighContrast] = useState(false)
   const [voiceCommandsEnabled, setVoiceCommandsEnabled] = useState(false)
-  const [recognition, setRecognition] = useState<SpeechRecognition | null>(null)
+  const [recognition, setRecognition] = useState<any>(null)
 
-  // Initialize speech recognition
   useEffect(() => {
-    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
+    if (SpeechRecognition) {
       const recognitionInstance = new SpeechRecognition()
-      
       recognitionInstance.continuous = true
       recognitionInstance.interimResults = false
       recognitionInstance.lang = 'en-US'
-      
-      recognitionInstance.onresult = (event) => {
+
+      recognitionInstance.onresult = (event: any) => {
         const command = event.results[event.results.length - 1][0].transcript.toLowerCase()
         handleVoiceCommand(command)
       }
-      
-      recognitionInstance.onerror = (event) => {
+
+      recognitionInstance.onerror = (event: any) => {
         console.error('Speech recognition error:', event.error)
         announceMessage('Voice command error occurred')
       }
-      
+
       setRecognition(recognitionInstance)
     }
   }, [])
@@ -103,16 +108,13 @@ export function AccessibilityProvider({ children }: AccessibilityProviderProps) 
   }
 
   const announceMessage = (message: string) => {
-    // Create a live region for screen reader announcements
     const announcement = document.createElement('div')
     announcement.setAttribute('aria-live', 'polite')
     announcement.setAttribute('aria-atomic', 'true')
     announcement.className = 'sr-only'
     announcement.textContent = message
-    
+
     document.body.appendChild(announcement)
-    
-    // Remove after announcement
     setTimeout(() => {
       document.body.removeChild(announcement)
     }, 1000)
@@ -135,10 +137,15 @@ export function AccessibilityProvider({ children }: AccessibilityProviderProps) 
 }
 
 function AccessibilityToolbar() {
-  const { highContrast, toggleHighContrast, voiceCommandsEnabled, toggleVoiceCommands } = useAccessibility()
+  const {
+    highContrast,
+    toggleHighContrast,
+    voiceCommandsEnabled,
+    toggleVoiceCommands
+  } = useAccessibility()
 
   return (
-    <div 
+    <div
       className="fixed bottom-4 right-4 z-50 flex gap-2 bg-card/90 backdrop-blur-sm border border-border rounded-lg p-2"
       role="toolbar"
       aria-label="Accessibility tools"
@@ -155,7 +162,7 @@ function AccessibilityToolbar() {
           {highContrast ? 'Disable' : 'Enable'} high contrast mode
         </span>
       </Button>
-      
+
       <Button
         variant="outline"
         size="sm"

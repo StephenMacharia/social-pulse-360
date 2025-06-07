@@ -32,6 +32,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 const items = [
+
   {
     title: "Dashboard", 
     url: "/",
@@ -62,6 +63,7 @@ const items = [
     url: "/settings",
     icon: Settings,
   },
+  
 ]
 
 export function AppSidebar() {
@@ -69,7 +71,7 @@ export function AppSidebar() {
     <Sidebar>
       <SidebarContent>
         <div className="p-4">
-          <h2 className="text-lg font-semibold mb-4">Social Nexus AI</h2>
+          <h2 className="text-lg font-semibold mb-4">Social Pulse 360 </h2>
         </div>
 
         <SidebarGroup>
