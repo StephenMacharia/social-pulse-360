@@ -1,3 +1,4 @@
+
 import {
   BarChart3,
   Bell,
@@ -9,13 +10,16 @@ import {
 import { NavLink } from "react-router-dom"
 
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
+  Sidebar,
+  SidebarContent,
+  SidebarGroup,
+  SidebarGroupContent,
+  SidebarGroupLabel,
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+  SidebarTrigger,
+} from "@/components/ui/sidebar"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Button } from "@/components/ui/button"
 import {
@@ -26,7 +30,6 @@ import {
   DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useSidebar } from "@/components/ui/sidebar"
 
 const items = [
   {
@@ -62,52 +65,52 @@ const items = [
 ]
 
 export function AppSidebar() {
-  const { isOpen, onOpen, onClose } = useSidebar()
-
   return (
-    <Sheet open={isOpen} onOpenChange={onClose}>
-      <SheetContent className="w-64 flex flex-col gap-4 p-0 pt-4">
-        <div className="px-4 pb-6">
-          <SheetHeader className="px-4 pb-6">
-            <SheetTitle>Menu</SheetTitle>
-            <SheetDescription>
-              Manage your account preferences, set privacy settings, and more.
-            </SheetDescription>
-          </SheetHeader>
+    <Sidebar>
+      <SidebarContent>
+        <div className="p-4">
+          <h2 className="text-lg font-semibold mb-4">Social Nexus AI</h2>
         </div>
 
-        <div className="flex-1">
-          <ul className="grid gap-1">
-            {items.map((item) => (
-              <li key={item.title}>
-                <SheetTrigger asChild>
-                  <NavLink
-                    to={item.url}
-                    className={({ isActive }) =>
-                      `flex items-center gap-3 rounded-md px-4 py-2 text-sm font-medium transition-colors hover:bg-secondary/50 data-[active]:bg-secondary
-                      data-[active]:text-secondary-foreground`
-                    }
-                  >
-                    <item.icon className="h-4 w-4" />
-                    <span>{item.title}</span>
-                  </NavLink>
-                </SheetTrigger>
-              </li>
-            ))}
-          </ul>
-        </div>
+        <SidebarGroup>
+          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {items.map((item) => (
+                <SidebarMenuItem key={item.title}>
+                  <SidebarMenuButton asChild>
+                    <NavLink
+                      to={item.url}
+                      className={({ isActive }) =>
+                        `flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors hover:bg-accent hover:text-accent-foreground ${
+                          isActive ? 'bg-accent text-accent-foreground' : ''
+                        }`
+                      }
+                      aria-label={`Navigate to ${item.title}`}
+                    >
+                      <item.icon className="h-4 w-4" aria-hidden="true" />
+                      <span>{item.title}</span>
+                    </NavLink>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              ))}
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
 
-        <div className="border-t border-border px-4 py-3">
+        <div className="mt-auto border-t border-border p-4">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button variant="ghost" className="flex h-8 w-full items-center justify-between rounded-md">
-                <div className="flex items-center gap-2">
-                  <Avatar className="h-8 w-8">
-                    <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
-                    <AvatarFallback>SC</AvatarFallback>
-                  </Avatar>
-                  <span>shadcn</span>
-                </div>
+              <Button 
+                variant="ghost" 
+                className="flex h-10 w-full items-center justify-start gap-2 rounded-md px-3"
+                aria-label="User menu"
+              >
+                <Avatar className="h-6 w-6">
+                  <AvatarImage src="https://github.com/shadcn.png" alt="User avatar" />
+                  <AvatarFallback>SC</AvatarFallback>
+                </Avatar>
+                <span className="text-sm">shadcn</span>
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end" className="w-[200px]">
@@ -128,7 +131,7 @@ export function AppSidebar() {
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
-      </SheetContent>
-    </Sheet>
+      </SidebarContent>
+    </Sidebar>
   )
 }
