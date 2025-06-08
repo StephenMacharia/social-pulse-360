@@ -1,3 +1,4 @@
+
 import { useState } from "react"
 import {
   Bot, X, Lightbulb, TrendingUp, AlertCircle,
@@ -296,27 +297,34 @@ export function AICopilot() {
           ))}
         </div>
 
-        {/* Input */}
-        <div className="flex gap-2">
-          <Input
-            placeholder="Type your message here..."
-            value={message}
-            onChange={(e) => setMessage(e.target.value)}
-            className="text-sm"
-            onKeyPress={(e) => {
-              if (e.key === 'Enter') {
-                handleSendMessage()
-              }
-            }}
-          />
-          <Button 
-            size="icon" 
-            className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white"
-            onClick={handleSendMessage}
-            title="Send message"
-          >
-            <Send className="w-4 h-4" />
-          </Button>
+        {/* Enhanced Input Section */}
+        <div className="border-t border-gray-200 dark:border-gray-700 pt-3">
+          <div className="flex gap-2 items-center">
+            <div className="flex-1 relative">
+              <Input
+                placeholder="💬 Send your message here... Ask me anything!"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                className="text-sm pr-12 border-2 border-blue-200 dark:border-blue-800 focus:border-blue-400 dark:focus:border-blue-600 bg-white dark:bg-gray-800"
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    handleSendMessage()
+                  }
+                }}
+              />
+            </div>
+            <Button 
+              size="icon" 
+              className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white hover:from-blue-700 hover:to-indigo-800 transition-all duration-200 shadow-lg"
+              onClick={handleSendMessage}
+              title="Send message"
+            >
+              <Send className="w-4 h-4" />
+            </Button>
+          </div>
+          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center">
+            Ask about features, analytics, or get help with the platform
+          </p>
         </div>
       </CardContent>
     </Card>
