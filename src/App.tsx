@@ -1,3 +1,4 @@
+
 import { Toaster } from "@/components/ui/toaster"
 import { Toaster as Sonner } from "@/components/ui/sonner"
 import { TooltipProvider } from "@/components/ui/tooltip"
@@ -10,9 +11,9 @@ import CrisisRoom from "./pages/CrisisRoom"
 import NotFound from "./pages/NotFound"
 import Analytics from "./pages/Analytics"
 import Automation from "./pages/Automation"
+import BusinessDevelopment from "./pages/BusinessDevelopment"
 import { AICopilot } from "./components/AICopilot"
 import Signin from "./pages/Signin"
-
 import Signup from "./pages/Signup"
 import AuthPage from "./pages/AuthWrapper"
 
@@ -31,6 +32,7 @@ const App = () => (
             <Route path="/crisis" element={<CrisisRoom />} />
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/automation" element={<Automation />} />
+            <Route path="/business" element={<BusinessDevelopment />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/auth" element={<AuthPage/>} />
             <Route path="*" element={<NotFound />} />
