@@ -1,4 +1,3 @@
-
 import { useState } from "react"
 import {
   Bot, X, Lightbulb, TrendingUp, AlertCircle,
@@ -35,7 +34,7 @@ export function AICopilot() {
     {
       id: 1,
       type: "assistant",
-      content: "Hi! I'm your Social Pulse 360 AI assistant. I can help you understand the platform features, explain analytics, or answer questions about your social media monitoring. What would you like to know?",
+      content: "Hello! 👋 I'm your Social Pulse 360 AI assistant. I can help you understand the platform features, explain analytics, or answer questions about your social media monitoring. What would you like to know?",
       timestamp: new Date()
     }
   ])
@@ -103,6 +102,32 @@ export function AICopilot() {
   const generateAIResponse = (userMessage: string): string => {
     const lowerMessage = userMessage.toLowerCase()
     
+    // Greetings
+    if (lowerMessage.includes("hello") || lowerMessage.includes("hi") || lowerMessage.includes("hey")) {
+      return "Hello! 😊 Great to see you here! I'm your Social Pulse 360 assistant. I can help you navigate the platform, explain features, or answer questions about your social media analytics. What would you like to explore?"
+    }
+    
+    if (lowerMessage.includes("good morning")) {
+      return "Good morning! ☀️ Ready to dive into your social media insights? Your current sentiment score is at 84% - that's excellent! What would you like to focus on today?"
+    }
+    
+    if (lowerMessage.includes("good afternoon") || lowerMessage.includes("good evening")) {
+      return "Good afternoon! 🌅 Hope you're having a productive day! Your brand mentions are up 12.5% this week. Is there anything specific you'd like to know about your social media performance?"
+    }
+    
+    if (lowerMessage.includes("thank") || lowerMessage.includes("thanks")) {
+      return "You're very welcome! 😊 I'm always here to help you get the most out of Social Pulse 360. Feel free to ask me anything else!"
+    }
+    
+    if (lowerMessage.includes("bye") || lowerMessage.includes("goodbye")) {
+      return "Goodbye! 👋 Have a great day managing your social media presence. Remember, I'm always here when you need assistance with Social Pulse 360!"
+    }
+
+    // Current dashboard insights
+    if (lowerMessage.includes("current") || lowerMessage.includes("today") || lowerMessage.includes("now") || lowerMessage.includes("latest")) {
+      return "Here are your current insights:\n• Total Mentions: 24,891 (+12.5% from last week)\n• Sentiment Score: 84% (excellent!)\n• Influencer Reach: 2.3M (+15.8% growth)\n• Campaign ROI: 340% (+24% this month)\n\nAll metrics are trending positively! 📈"
+    }
+    
     if (lowerMessage.includes("dashboard") || lowerMessage.includes("overview")) {
       return "The Social Pulse 360 dashboard shows key metrics like Total Mentions (24,891), Sentiment Score (84%), Influencer Reach (2.3M), and Campaign ROI (340%). You can view real-time sentiment analysis, platform feeds, and AI predictions here."
     }
@@ -135,6 +160,15 @@ export function AICopilot() {
       return "I can help you with:\n• Understanding dashboard metrics\n• Navigating different sections\n• Explaining analytics features\n• Crisis management tools\n• Automation workflows\n• Business development features\n\nWhat specific area would you like to explore?"
     }
     
+    // Simple responses
+    if (lowerMessage.includes("what") && lowerMessage.includes("do")) {
+      return "Social Pulse 360 helps you monitor social media mentions, analyze sentiment, track influencers, manage potential crises, automate workflows, and handle business development with CRM and NPS tools. What specific feature interests you most?"
+    }
+    
+    if (lowerMessage.includes("how are you") || lowerMessage.includes("how's it going")) {
+      return "I'm doing great, thank you for asking! 😊 I'm here and ready to help you make the most of Social Pulse 360. Your social media metrics are looking strong today!"
+    }
+    
     return "I understand you're asking about Social Pulse 360. This platform helps you monitor social media mentions, analyze sentiment, track influencers, manage crises, and automate your social media workflows. Could you be more specific about what you'd like to know?"
   }
 
@@ -163,7 +197,8 @@ export function AICopilot() {
     return (
       <Button
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 left-6 bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-lg z-50 rounded-full p-4"
+        className="fixed bottom-6 left-6 bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-lg z-50 rounded-full p-4 animate-pulse"
+        title="Open AI Assistant"
       >
         <Bot className="w-6 h-6" />
       </Button>
@@ -177,6 +212,7 @@ export function AICopilot() {
         <Button
           onClick={() => setIsMinimized(false)}
           className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white shadow-lg rounded-full p-3"
+          title="Expand AI Assistant"
         >
           <Bot className="w-5 h-5" />
         </Button>
@@ -186,7 +222,7 @@ export function AICopilot() {
 
   // Expanded chat
   return (
-    <Card className="fixed bottom-6 left-6 w-80 h-96 z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-gray-300 dark:border-gray-700 shadow-2xl rounded-xl overflow-hidden flex flex-col">
+    <Card className="fixed bottom-6 left-6 w-80 h-96 z-50 bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl border border-gray-300 dark:border-gray-700 shadow-2xl rounded-xl overflow-hidden flex flex-col">
       <CardHeader className="pb-2 border-b border-gray-200 dark:border-gray-700">
         <div className="flex items-center justify-between">
           <CardTitle className="flex items-center gap-2 text-sm text-gray-800 dark:text-gray-100">
@@ -201,6 +237,7 @@ export function AICopilot() {
               size="icon"
               className="h-6 w-6"
               onClick={() => setIsMinimized(true)}
+              title="Minimize"
             >
               <Minimize2 className="w-3 h-3" />
             </Button>
@@ -209,6 +246,7 @@ export function AICopilot() {
               size="icon"
               className="h-6 w-6"
               onClick={() => setIsOpen(false)}
+              title="Close"
             >
               <X className="w-3 h-3" />
             </Button>
@@ -261,7 +299,7 @@ export function AICopilot() {
         {/* Input */}
         <div className="flex gap-2">
           <Input
-            placeholder="Ask about Social Pulse 360..."
+            placeholder="Type your message here..."
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             className="text-sm"
@@ -275,6 +313,7 @@ export function AICopilot() {
             size="icon" 
             className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white"
             onClick={handleSendMessage}
+            title="Send message"
           >
             <Send className="w-4 h-4" />
           </Button>
