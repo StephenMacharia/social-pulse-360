@@ -1,3 +1,4 @@
+
 import {
   Home,
   AlertTriangle,
@@ -20,7 +21,6 @@ import {
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useSidebar } from "@/components/ui/sidebar"
-import { useUser } from "@clerk/clerk-react"
 
 const items = [
   {
@@ -51,8 +51,15 @@ const items = [
 ]
 
 export function AppSidebar() {
-  const { isCollapsed, toggleSidebar } = useSidebar()
-  const { user } = useUser()
+  const { state, toggleSidebar } = useSidebar()
+  const isCollapsed = state === "collapsed"
+  
+  // Mock user data - replace with your authentication system
+  const mockUser = {
+    firstName: "John",
+    lastName: "Doe",
+    imageUrl: "/placeholder.svg"
+  }
 
   return (
     <aside className={`
@@ -106,8 +113,8 @@ export function AppSidebar() {
             className="absolute bottom-2 left-2 rounded-full shadow transition-transform hover:scale-110 md:hidden"
           >
             <Avatar className="w-7 h-7">
-              <AvatarImage src={user?.imageUrl} />
-              <AvatarFallback>{user?.firstName?.charAt(0)}{user?.lastName?.charAt(0)}</AvatarFallback>
+              <AvatarImage src={mockUser?.imageUrl} />
+              <AvatarFallback>{mockUser?.firstName?.charAt(0)}{mockUser?.lastName?.charAt(0)}</AvatarFallback>
             </Avatar>
           </Button>
         </SheetTrigger>
@@ -121,7 +128,7 @@ export function AppSidebar() {
           <div className="grid gap-4 py-4">
             <div className="flex items-center gap-2">
               <User className="w-4 h-4" />
-              <span>{user?.firstName} {user?.lastName}</span>
+              <span>{mockUser?.firstName} {mockUser?.lastName}</span>
             </div>
             <div className="flex items-center gap-2">
               <Settings className="w-4 h-4" />
