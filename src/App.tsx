@@ -12,6 +12,8 @@ import NotFound from "./pages/NotFound"
 import Analytics from "./pages/Analytics"
 import Automation from "./pages/Automation"
 import BusinessDevelopment from "./pages/BusinessDevelopment"
+import Settings from "./pages/Settings"
+import Help from "./pages/Help"
 import { AICopilot } from "./components/AICopilot"
 import Signin from "./pages/Signin"
 import Signup from "./pages/Signup"
@@ -33,6 +35,8 @@ const App = () => (
             <Route path="/analytics" element={<Analytics />} />
             <Route path="/automation" element={<Automation />} />
             <Route path="/business" element={<BusinessDevelopment />} />
+            <Route path="/settings" element={<Settings />} />
+            <Route path="/help" element={<Help />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/auth" element={<AuthPage/>} />
             <Route path="*" element={<NotFound />} />

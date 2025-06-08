@@ -297,15 +297,20 @@ export function AICopilot() {
           ))}
         </div>
 
-        {/* Enhanced Input Section */}
-        <div className="border-t border-gray-200 dark:border-gray-700 pt-3">
+        {/* Enhanced Input Section with Better Visibility */}
+        <div className="border-t-2 border-blue-200 dark:border-blue-800 pt-3 bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-900/20 dark:to-indigo-900/20 rounded-lg p-3 -m-3 mt-3">
+          <div className="mb-2">
+            <p className="text-xs font-semibold text-blue-700 dark:text-blue-300 text-center animate-pulse">
+              💬 Ask me anything about Social Pulse 360!
+            </p>
+          </div>
           <div className="flex gap-2 items-center">
             <div className="flex-1 relative">
               <Input
-                placeholder="💬 Send your message here... Ask me anything!"
+                placeholder="Type your question here... e.g., 'How do crisis alerts work?'"
                 value={message}
                 onChange={(e) => setMessage(e.target.value)}
-                className="text-sm pr-12 border-2 border-blue-200 dark:border-blue-800 focus:border-blue-400 dark:focus:border-blue-600 bg-white dark:bg-gray-800"
+                className="text-sm pr-12 border-2 border-blue-300 dark:border-blue-600 focus:border-blue-500 dark:focus:border-blue-400 bg-white dark:bg-gray-800 shadow-sm font-medium placeholder:text-gray-500 dark:placeholder:text-gray-400"
                 onKeyPress={(e) => {
                   if (e.key === 'Enter') {
                     handleSendMessage()
@@ -315,16 +320,18 @@ export function AICopilot() {
             </div>
             <Button 
               size="icon" 
-              className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white hover:from-blue-700 hover:to-indigo-800 transition-all duration-200 shadow-lg"
+              className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white hover:from-blue-700 hover:to-indigo-800 transition-all duration-200 shadow-lg border-2 border-blue-500/20 hover:scale-105"
               onClick={handleSendMessage}
               title="Send message"
             >
               <Send className="w-4 h-4" />
             </Button>
           </div>
-          <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 text-center">
-            Ask about features, analytics, or get help with the platform
-          </p>
+          <div className="mt-2 text-center">
+            <p className="text-[10px] text-blue-600 dark:text-blue-400 font-medium">
+              ✨ Get instant help with features, analytics, insights & more
+            </p>
+          </div>
         </div>
       </CardContent>
     </Card>
