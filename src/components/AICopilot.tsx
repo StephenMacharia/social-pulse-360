@@ -1,3 +1,4 @@
+
 import { useState } from "react"
 import {
   Bot, X, Lightbulb, TrendingUp, AlertCircle,
@@ -19,10 +20,25 @@ interface Suggestion {
   urgent?: boolean
 }
 
+interface Message {
+  id: number
+  type: "user" | "assistant"
+  content: string
+  timestamp: Date
+}
+
 export function AICopilot() {
   const [isOpen, setIsOpen] = useState(false)
   const [isMinimized, setIsMinimized] = useState(false)
   const [message, setMessage] = useState("")
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      id: 1,
+      type: "assistant",
+      content: "Hi! I'm your Social Pulse 360 AI assistant. I can help you understand the platform features, explain analytics, or answer questions about your social media monitoring. What would you like to know?",
+      timestamp: new Date()
+    }
+  ])
 
   const suggestions: Suggestion[] = [
     {
@@ -55,6 +71,72 @@ export function AICopilot() {
       confidence: 82
     }
   ]
+
+  const handleSendMessage = () => {
+    if (!message.trim()) return
+
+    const userMessage: Message = {
+      id: messages.length + 1,
+      type: "user",
+      content: message,
+      timestamp: new Date()
+    }
+
+    setMessages(prev => [...prev, userMessage])
+    
+    // Generate AI response based on message content
+    const aiResponse = generateAIResponse(message)
+    const assistantMessage: Message = {
+      id: messages.length + 2,
+      type: "assistant",
+      content: aiResponse,
+      timestamp: new Date()
+    }
+
+    setTimeout(() => {
+      setMessages(prev => [...prev, assistantMessage])
+    }, 500)
+
+    setMessage("")
+  }
+
+  const generateAIResponse = (userMessage: string): string => {
+    const lowerMessage = userMessage.toLowerCase()
+    
+    if (lowerMessage.includes("dashboard") || lowerMessage.includes("overview")) {
+      return "The Social Pulse 360 dashboard shows key metrics like Total Mentions (24,891), Sentiment Score (84%), Influencer Reach (2.3M), and Campaign ROI (340%). You can view real-time sentiment analysis, platform feeds, and AI predictions here."
+    }
+    
+    if (lowerMessage.includes("crisis") || lowerMessage.includes("alert")) {
+      return "The Crisis Room monitors negative sentiment spikes and potential PR issues. It provides real-time alerts, suggested responses, and escalation protocols to help you manage brand reputation effectively."
+    }
+    
+    if (lowerMessage.includes("analytics") || lowerMessage.includes("metrics")) {
+      return "Analytics section provides deep insights into your social media performance, including engagement trends, audience demographics, competitor analysis, and custom reporting features."
+    }
+    
+    if (lowerMessage.includes("automation") || lowerMessage.includes("workflow")) {
+      return "Automation tools help you create workflows for posting, responding to mentions, and managing your social media presence. You can set up triggers based on sentiment, keywords, or engagement levels."
+    }
+    
+    if (lowerMessage.includes("business") || lowerMessage.includes("crm") || lowerMessage.includes("nps")) {
+      return "Business Development section includes CRM for managing contacts and opportunities, plus NPS surveys to measure customer satisfaction. Track your sales pipeline and gather valuable feedback."
+    }
+    
+    if (lowerMessage.includes("sentiment") || lowerMessage.includes("mood")) {
+      return "Sentiment analysis tracks how people feel about your brand across platforms. We analyze mentions in real-time and categorize them as positive, negative, or neutral, helping you understand public perception."
+    }
+    
+    if (lowerMessage.includes("influencer")) {
+      return "The Influencer Hub helps you discover, track, and collaborate with key influencers in your industry. View their reach, engagement rates, and recent activity to make informed partnership decisions."
+    }
+    
+    if (lowerMessage.includes("help") || lowerMessage.includes("how")) {
+      return "I can help you with:\n• Understanding dashboard metrics\n• Navigating different sections\n• Explaining analytics features\n• Crisis management tools\n• Automation workflows\n• Business development features\n\nWhat specific area would you like to explore?"
+    }
+    
+    return "I understand you're asking about Social Pulse 360. This platform helps you monitor social media mentions, analyze sentiment, track influencers, manage crises, and automate your social media workflows. Could you be more specific about what you'd like to know?"
+  }
 
   const getTypeIcon = (type: string) => {
     switch (type) {
@@ -111,7 +193,7 @@ export function AICopilot() {
             <div className="p-1 bg-gradient-to-br from-blue-600 to-indigo-700 rounded-md">
               <Bot className="w-4 h-4 text-white" />
             </div>
-            AI Copilot
+            Social Pulse AI
           </CardTitle>
           <div className="flex gap-1">
             <Button
@@ -135,9 +217,23 @@ export function AICopilot() {
       </CardHeader>
 
       <CardContent className="p-3 pt-2 flex flex-col h-full">
-        {/* Suggestions */}
+        {/* Chat Messages */}
         <div className="flex-1 overflow-y-auto space-y-3 mb-3 pr-1">
-          {suggestions.map((s) => (
+          {messages.map((msg) => (
+            <div
+              key={msg.id}
+              className={`p-2 rounded-lg text-xs ${
+                msg.type === "user"
+                  ? "bg-blue-500 text-white ml-4"
+                  : "bg-gray-100 dark:bg-gray-800 mr-4"
+              }`}
+            >
+              {msg.content}
+            </div>
+          ))}
+          
+          {/* Suggestions */}
+          {messages.length <= 1 && suggestions.map((s) => (
             <div
               key={s.id}
               className={`p-3 rounded-md border text-sm ${getTypeColor(s.type)} ${s.urgent ? 'animate-pulse' : ''}`}
@@ -165,18 +261,21 @@ export function AICopilot() {
         {/* Input */}
         <div className="flex gap-2">
           <Input
-            placeholder="Ask AI anything..."
+            placeholder="Ask about Social Pulse 360..."
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             className="text-sm"
             onKeyPress={(e) => {
               if (e.key === 'Enter') {
-                // Send message logic here
-                setMessage("")
+                handleSendMessage()
               }
             }}
           />
-          <Button size="icon" className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white">
+          <Button 
+            size="icon" 
+            className="bg-gradient-to-br from-blue-600 to-indigo-700 text-white"
+            onClick={handleSendMessage}
+          >
             <Send className="w-4 h-4" />
           </Button>
         </div>

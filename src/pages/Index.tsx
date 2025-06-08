@@ -27,7 +27,7 @@ const Index = () => {
                 id="hero-title"
                 className="text-4xl font-bold mb-4 bg-gradient-to-r from-primary via-blue-500 to-cyan-500 bg-clip-text text-transparent"
               >
-                AI-Powered Social Intelligence
+                Social Pulse 360
               </h1>
               <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
                 Monitor, analyze, and amplify your brand across all social platforms with advanced AI insights
