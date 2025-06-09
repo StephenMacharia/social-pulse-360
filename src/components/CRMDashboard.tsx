@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react"
 import { Users, Plus, Phone, Mail, Building, DollarSign, Calendar, Filter } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -12,24 +13,31 @@ import { useToast } from "@/hooks/use-toast"
 interface Contact {
   id: string
   name: string
-  email: string
-  phone: string
-  company: string
-  role: string
-  status: "hot" | "warm" | "cold"
-  last_contact: string
-  source: string
-  notes: string
+  email: string | null
+  phone: string | null
+  company: string | null
+  role: string | null
+  status: string | null
+  last_contact: string | null
+  source: string | null
+  notes: string | null
+  created_at: string | null
+  updated_at: string | null
+  user_id: string
 }
 
 interface Opportunity {
   id: string
   title: string
-  contact_id: string
-  value: number
-  stage: "prospecting" | "qualification" | "proposal" | "negotiation" | "closed-won" | "closed-lost"
-  probability: number
-  close_date: string
+  contact_id: string | null
+  value: number | null
+  stage: string | null
+  probability: number | null
+  close_date: string | null
+  notes: string | null
+  created_at: string | null
+  updated_at: string | null
+  user_id: string
 }
 
 export function CRMDashboard() {
@@ -81,8 +89,10 @@ export function CRMDashboard() {
   }
 
   const addSampleData = async () => {
+    if (!user) return
+
     try {
-      // Add sample contacts
+      // Add sample contacts with user_id
       const sampleContacts = [
         {
           name: "Sarah Johnson",
@@ -92,7 +102,8 @@ export function CRMDashboard() {
           role: "Marketing Director",
           status: "hot",
           source: "LinkedIn",
-          notes: "Interested in enterprise solution"
+          notes: "Interested in enterprise solution",
+          user_id: user.id
         },
         {
           name: "Mike Chen",
@@ -102,7 +113,8 @@ export function CRMDashboard() {
           role: "CEO",
           status: "warm",
           source: "Referral",
-          notes: "Looking for startup package"
+          notes: "Looking for startup package",
+          user_id: user.id
         }
       ]
 
@@ -113,7 +125,7 @@ export function CRMDashboard() {
 
       if (contactError) throw contactError
 
-      // Add sample opportunities
+      // Add sample opportunities with user_id
       if (insertedContacts && insertedContacts.length > 0) {
         const sampleOpportunities = [
           {
@@ -122,7 +134,8 @@ export function CRMDashboard() {
             value: 50000,
             stage: "proposal",
             probability: 75,
-            close_date: "2024-02-15"
+            close_date: "2024-02-15",
+            user_id: user.id
           },
           {
             title: "Startup Package - StartupX",
@@ -130,7 +143,8 @@ export function CRMDashboard() {
             value: 15000,
             stage: "qualification",
             probability: 60,
-            close_date: "2024-03-01"
+            close_date: "2024-03-01",
+            user_id: user.id
           }
         ]
 
@@ -157,7 +171,7 @@ export function CRMDashboard() {
     }
   }
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status: string | null) => {
     switch (status) {
       case "hot": return "bg-red-500/20 text-red-400"
       case "warm": return "bg-yellow-500/20 text-yellow-400"
@@ -166,7 +180,7 @@ export function CRMDashboard() {
     }
   }
 
-  const getStageColor = (stage: string) => {
+  const getStageColor = (stage: string | null) => {
     switch (stage) {
       case "prospecting": return "bg-gray-500/20 text-gray-400"
       case "qualification": return "bg-blue-500/20 text-blue-400"
@@ -180,7 +194,7 @@ export function CRMDashboard() {
 
   const filteredContacts = contacts.filter(contact => {
     const matchesSearch = contact.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         contact.company.toLowerCase().includes(searchTerm.toLowerCase())
+                         (contact.company || '').toLowerCase().includes(searchTerm.toLowerCase())
     const matchesStatus = statusFilter === "all" || contact.status === statusFilter
     return matchesSearch && matchesStatus
   })
@@ -320,21 +334,21 @@ export function CRMDashboard() {
                         <div className="flex items-center gap-3 mb-2">
                           <h4 className="font-semibold">{contact.name}</h4>
                           <Badge className={getStatusColor(contact.status)}>
-                            {contact.status}
+                            {contact.status || 'unknown'}
                           </Badge>
-                          <Badge variant="outline">{contact.source}</Badge>
+                          <Badge variant="outline">{contact.source || 'unknown'}</Badge>
                         </div>
                         <p className="text-sm text-muted-foreground mb-1">
-                          {contact.role} at {contact.company}
+                          {contact.role || 'Unknown role'} at {contact.company || 'Unknown company'}
                         </p>
                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
                           <div className="flex items-center gap-1">
                             <Mail className="w-3 h-3" />
-                            {contact.email}
+                            {contact.email || 'No email'}
                           </div>
                           <div className="flex items-center gap-1">
                             <Phone className="w-3 h-3" />
-                            {contact.phone}
+                            {contact.phone || 'No phone'}
                           </div>
                           {contact.last_contact && (
                             <span>Last contact: {new Date(contact.last_contact).toLocaleDateString()}</span>
@@ -368,21 +382,21 @@ export function CRMDashboard() {
                           <div className="flex items-center gap-3 mb-2">
                             <h4 className="font-semibold">{opportunity.title}</h4>
                             <Badge className={getStageColor(opportunity.stage)}>
-                              {opportunity.stage}
+                              {opportunity.stage || 'unknown'}
                             </Badge>
                           </div>
                           <p className="text-sm text-muted-foreground mb-1">
-                            {contact?.name} - {contact?.company}
+                            {contact?.name || 'Unknown contact'} - {contact?.company || 'Unknown company'}
                           </p>
                           <div className="flex items-center gap-4 text-sm">
                             <span className="font-medium text-green-400">
                               ${(opportunity.value || 0).toLocaleString()}
                             </span>
                             <span className="text-muted-foreground">
-                              {opportunity.probability}% probability
+                              {opportunity.probability || 0}% probability
                             </span>
                             <span className="text-muted-foreground">
-                              Close: {opportunity.close_date}
+                              Close: {opportunity.close_date || 'TBD'}
                             </span>
                           </div>
                         </div>
