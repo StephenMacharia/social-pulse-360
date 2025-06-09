@@ -1,11 +1,13 @@
-
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Users, Plus, Phone, Mail, Building, DollarSign, Calendar, Filter } from "lucide-react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { supabase } from "@/integrations/supabase/client"
+import { useAuth } from "@/hooks/useAuth"
+import { useToast } from "@/hooks/use-toast"
 
 interface Contact {
   id: string
@@ -15,90 +17,145 @@ interface Contact {
   company: string
   role: string
   status: "hot" | "warm" | "cold"
-  lastContact: string
+  last_contact: string
   source: string
+  notes: string
 }
 
 interface Opportunity {
   id: string
   title: string
-  contactId: string
+  contact_id: string
   value: number
   stage: "prospecting" | "qualification" | "proposal" | "negotiation" | "closed-won" | "closed-lost"
   probability: number
-  closeDate: string
+  close_date: string
 }
 
 export function CRMDashboard() {
+  const { user } = useAuth()
+  const { toast } = useToast()
   const [activeTab, setActiveTab] = useState<"contacts" | "opportunities">("contacts")
   const [searchTerm, setSearchTerm] = useState("")
   const [statusFilter, setStatusFilter] = useState<string>("all")
+  const [contacts, setContacts] = useState<Contact[]>([])
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const contacts: Contact[] = [
-    {
-      id: "1",
-      name: "Sarah Johnson",
-      email: "sarah@techcorp.com",
-      phone: "+1-555-0123",
-      company: "TechCorp Inc",
-      role: "Marketing Director",
-      status: "hot",
-      lastContact: "2024-01-15",
-      source: "LinkedIn"
-    },
-    {
-      id: "2",
-      name: "Mike Chen",
-      email: "mike@startupx.com",
-      phone: "+1-555-0124",
-      company: "StartupX",
-      role: "CEO",
-      status: "warm",
-      lastContact: "2024-01-12",
-      source: "Referral"
-    },
-    {
-      id: "3",
-      name: "Emily Davis",
-      email: "emily@bigbrand.com",
-      phone: "+1-555-0125",
-      company: "BigBrand Corp",
-      role: "CMO",
-      status: "cold",
-      lastContact: "2024-01-08",
-      source: "Website"
+  useEffect(() => {
+    if (user) {
+      loadData()
     }
-  ]
+  }, [user])
 
-  const opportunities: Opportunity[] = [
-    {
-      id: "1",
-      title: "Enterprise License - TechCorp",
-      contactId: "1",
-      value: 50000,
-      stage: "proposal",
-      probability: 75,
-      closeDate: "2024-02-15"
-    },
-    {
-      id: "2",
-      title: "Startup Package - StartupX",
-      contactId: "2",
-      value: 15000,
-      stage: "qualification",
-      probability: 60,
-      closeDate: "2024-03-01"
-    },
-    {
-      id: "3",
-      title: "Custom Solution - BigBrand",
-      contactId: "3",
-      value: 75000,
-      stage: "prospecting",
-      probability: 25,
-      closeDate: "2024-04-30"
+  const loadData = async () => {
+    try {
+      // Load contacts
+      const { data: contactsData, error: contactsError } = await supabase
+        .from('crm_contacts')
+        .select('*')
+        .order('created_at', { ascending: false })
+
+      if (contactsError) throw contactsError
+      setContacts(contactsData || [])
+
+      // Load opportunities
+      const { data: opportunitiesData, error: opportunitiesError } = await supabase
+        .from('opportunities')
+        .select('*')
+        .order('created_at', { ascending: false })
+
+      if (opportunitiesError) throw opportunitiesError
+      setOpportunities(opportunitiesData || [])
+
+    } catch (error) {
+      console.error('Error loading CRM data:', error)
+      toast({
+        title: "Error loading data",
+        description: "Failed to load CRM data. Please try again.",
+        variant: "destructive"
+      })
+    } finally {
+      setLoading(false)
     }
-  ]
+  }
+
+  const addSampleData = async () => {
+    try {
+      // Add sample contacts
+      const sampleContacts = [
+        {
+          name: "Sarah Johnson",
+          email: "sarah@techcorp.com",
+          phone: "+1-555-0123",
+          company: "TechCorp Inc",
+          role: "Marketing Director",
+          status: "hot",
+          source: "LinkedIn",
+          notes: "Interested in enterprise solution"
+        },
+        {
+          name: "Mike Chen",
+          email: "mike@startupx.com",
+          phone: "+1-555-0124",
+          company: "StartupX",
+          role: "CEO",
+          status: "warm",
+          source: "Referral",
+          notes: "Looking for startup package"
+        }
+      ]
+
+      const { data: insertedContacts, error: contactError } = await supabase
+        .from('crm_contacts')
+        .insert(sampleContacts)
+        .select()
+
+      if (contactError) throw contactError
+
+      // Add sample opportunities
+      if (insertedContacts && insertedContacts.length > 0) {
+        const sampleOpportunities = [
+          {
+            title: "Enterprise License - TechCorp",
+            contact_id: insertedContacts[0].id,
+            value: 50000,
+            stage: "proposal",
+            probability: 75,
+            close_date: "2024-02-15"
+          },
+          {
+            title: "Startup Package - StartupX",
+            contact_id: insertedContacts[1].id,
+            value: 15000,
+            stage: "qualification",
+            probability: 60,
+            close_date: "2024-03-01"
+          }
+        ]
+
+        const { error: opportunityError } = await supabase
+          .from('opportunities')
+          .insert(sampleOpportunities)
+
+        if (opportunityError) throw opportunityError
+      }
+
+      await loadData()
+      toast({
+        title: "Sample data added",
+        description: "Sample contacts and opportunities have been added to your CRM."
+      })
+
+    } catch (error) {
+      console.error('Error adding sample data:', error)
+      toast({
+        title: "Error adding data",
+        description: "Failed to add sample data. Please try again.",
+        variant: "destructive"
+      })
+    }
+  }
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -128,8 +185,18 @@ export function CRMDashboard() {
     return matchesSearch && matchesStatus
   })
 
-  const totalOpportunityValue = opportunities.reduce((sum, opp) => sum + opp.value, 0)
-  const avgProbability = opportunities.reduce((sum, opp) => sum + opp.probability, 0) / opportunities.length
+  const totalOpportunityValue = opportunities.reduce((sum, opp) => sum + (opp.value || 0), 0)
+  const avgProbability = opportunities.length > 0 
+    ? opportunities.reduce((sum, opp) => sum + (opp.probability || 0), 0) / opportunities.length
+    : 0
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    )
+  }
 
   return (
     <div className="space-y-6">
@@ -184,10 +251,17 @@ export function CRMDashboard() {
               <Users className="w-5 h-5" />
               CRM Dashboard
             </CardTitle>
-            <Button className="gradient-primary text-white">
-              <Plus className="w-4 h-4 mr-2" />
-              Add Contact
-            </Button>
+            <div className="flex gap-2">
+              {contacts.length === 0 && (
+                <Button onClick={addSampleData} variant="outline">
+                  Add Sample Data
+                </Button>
+              )}
+              <Button className="gradient-primary text-white">
+                <Plus className="w-4 h-4 mr-2" />
+                Add Contact
+              </Button>
+            </div>
           </div>
           
           {/* Tabs */}
@@ -234,78 +308,92 @@ export function CRMDashboard() {
           {/* Contacts Tab */}
           {activeTab === "contacts" && (
             <div className="space-y-3">
-              {filteredContacts.map((contact) => (
-                <div key={contact.id} className="p-4 bg-card/50 rounded-lg border border-border/50">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h4 className="font-semibold">{contact.name}</h4>
-                        <Badge className={getStatusColor(contact.status)}>
-                          {contact.status}
-                        </Badge>
-                        <Badge variant="outline">{contact.source}</Badge>
-                      </div>
-                      <p className="text-sm text-muted-foreground mb-1">
-                        {contact.role} at {contact.company}
-                      </p>
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                        <div className="flex items-center gap-1">
-                          <Mail className="w-3 h-3" />
-                          {contact.email}
-                        </div>
-                        <div className="flex items-center gap-1">
-                          <Phone className="w-3 h-3" />
-                          {contact.phone}
-                        </div>
-                        <span>Last contact: {contact.lastContact}</span>
-                      </div>
-                    </div>
-                    <Button size="sm" variant="outline">
-                      View Details
-                    </Button>
-                  </div>
+              {filteredContacts.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  {contacts.length === 0 ? "No contacts yet. Add some sample data to get started!" : "No contacts match your search."}
                 </div>
-              ))}
+              ) : (
+                filteredContacts.map((contact) => (
+                  <div key={contact.id} className="p-4 bg-card/50 rounded-lg border border-border/50">
+                    <div className="flex items-start justify-between">
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <h4 className="font-semibold">{contact.name}</h4>
+                          <Badge className={getStatusColor(contact.status)}>
+                            {contact.status}
+                          </Badge>
+                          <Badge variant="outline">{contact.source}</Badge>
+                        </div>
+                        <p className="text-sm text-muted-foreground mb-1">
+                          {contact.role} at {contact.company}
+                        </p>
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                          <div className="flex items-center gap-1">
+                            <Mail className="w-3 h-3" />
+                            {contact.email}
+                          </div>
+                          <div className="flex items-center gap-1">
+                            <Phone className="w-3 h-3" />
+                            {contact.phone}
+                          </div>
+                          {contact.last_contact && (
+                            <span>Last contact: {new Date(contact.last_contact).toLocaleDateString()}</span>
+                          )}
+                        </div>
+                      </div>
+                      <Button size="sm" variant="outline">
+                        View Details
+                      </Button>
+                    </div>
+                  </div>
+                ))
+              )}
             </div>
           )}
 
           {/* Opportunities Tab */}
           {activeTab === "opportunities" && (
             <div className="space-y-3">
-              {opportunities.map((opportunity) => {
-                const contact = contacts.find(c => c.id === opportunity.contactId)
-                return (
-                  <div key={opportunity.id} className="p-4 bg-card/50 rounded-lg border border-border/50">
-                    <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-2">
-                          <h4 className="font-semibold">{opportunity.title}</h4>
-                          <Badge className={getStageColor(opportunity.stage)}>
-                            {opportunity.stage}
-                          </Badge>
+              {opportunities.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  No opportunities yet. Add some sample data to get started!
+                </div>
+              ) : (
+                opportunities.map((opportunity) => {
+                  const contact = contacts.find(c => c.id === opportunity.contact_id)
+                  return (
+                    <div key={opportunity.id} className="p-4 bg-card/50 rounded-lg border border-border/50">
+                      <div className="flex items-start justify-between">
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h4 className="font-semibold">{opportunity.title}</h4>
+                            <Badge className={getStageColor(opportunity.stage)}>
+                              {opportunity.stage}
+                            </Badge>
+                          </div>
+                          <p className="text-sm text-muted-foreground mb-1">
+                            {contact?.name} - {contact?.company}
+                          </p>
+                          <div className="flex items-center gap-4 text-sm">
+                            <span className="font-medium text-green-400">
+                              ${(opportunity.value || 0).toLocaleString()}
+                            </span>
+                            <span className="text-muted-foreground">
+                              {opportunity.probability}% probability
+                            </span>
+                            <span className="text-muted-foreground">
+                              Close: {opportunity.close_date}
+                            </span>
+                          </div>
                         </div>
-                        <p className="text-sm text-muted-foreground mb-1">
-                          {contact?.name} - {contact?.company}
-                        </p>
-                        <div className="flex items-center gap-4 text-sm">
-                          <span className="font-medium text-green-400">
-                            ${opportunity.value.toLocaleString()}
-                          </span>
-                          <span className="text-muted-foreground">
-                            {opportunity.probability}% probability
-                          </span>
-                          <span className="text-muted-foreground">
-                            Close: {opportunity.closeDate}
-                          </span>
-                        </div>
+                        <Button size="sm" variant="outline">
+                          Update
+                        </Button>
                       </div>
-                      <Button size="sm" variant="outline">
-                        Update
-                      </Button>
                     </div>
-                  </div>
-                )
-              })}
+                  )
+                })
+              )}
             </div>
           )}
         </CardContent>

@@ -9,6 +9,409 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      automation_workflows: {
+        Row: {
+          actions: Json | null
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          trigger_config: Json | null
+          trigger_type: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          actions?: Json | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          trigger_config?: Json | null
+          trigger_type: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          actions?: Json | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          trigger_config?: Json | null
+          trigger_type?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      campaigns: {
+        Row: {
+          budget: number | null
+          created_at: string | null
+          description: string | null
+          end_date: string | null
+          id: string
+          metrics: Json | null
+          name: string
+          start_date: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          budget?: number | null
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          metrics?: Json | null
+          name: string
+          start_date?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          budget?: number | null
+          created_at?: string | null
+          description?: string | null
+          end_date?: string | null
+          id?: string
+          metrics?: Json | null
+          name?: string
+          start_date?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      crm_contacts: {
+        Row: {
+          company: string | null
+          created_at: string | null
+          email: string | null
+          id: string
+          last_contact: string | null
+          name: string
+          notes: string | null
+          phone: string | null
+          role: string | null
+          source: string | null
+          status: string | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          company?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          last_contact?: string | null
+          name: string
+          notes?: string | null
+          phone?: string | null
+          role?: string | null
+          source?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          company?: string | null
+          created_at?: string | null
+          email?: string | null
+          id?: string
+          last_contact?: string | null
+          name?: string
+          notes?: string | null
+          phone?: string | null
+          role?: string | null
+          source?: string | null
+          status?: string | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      influencers: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          category: string | null
+          created_at: string | null
+          engagement_rate: number | null
+          follower_count: number | null
+          handle: string
+          id: string
+          is_tracked: boolean | null
+          name: string
+          platform: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          category?: string | null
+          created_at?: string | null
+          engagement_rate?: number | null
+          follower_count?: number | null
+          handle: string
+          id?: string
+          is_tracked?: boolean | null
+          name: string
+          platform: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          category?: string | null
+          created_at?: string | null
+          engagement_rate?: number | null
+          follower_count?: number | null
+          handle?: string
+          id?: string
+          is_tracked?: boolean | null
+          name?: string
+          platform?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      mentions: {
+        Row: {
+          author: string
+          author_url: string | null
+          content: string
+          created_at: string | null
+          engagement_count: number | null
+          id: string
+          mention_date: string | null
+          platform: string
+          post_url: string | null
+          reach: number | null
+          sentiment: number | null
+          sentiment_label: string | null
+          user_id: string
+        }
+        Insert: {
+          author: string
+          author_url?: string | null
+          content: string
+          created_at?: string | null
+          engagement_count?: number | null
+          id?: string
+          mention_date?: string | null
+          platform: string
+          post_url?: string | null
+          reach?: number | null
+          sentiment?: number | null
+          sentiment_label?: string | null
+          user_id: string
+        }
+        Update: {
+          author?: string
+          author_url?: string | null
+          content?: string
+          created_at?: string | null
+          engagement_count?: number | null
+          id?: string
+          mention_date?: string | null
+          platform?: string
+          post_url?: string | null
+          reach?: number | null
+          sentiment?: number | null
+          sentiment_label?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      nps_responses: {
+        Row: {
+          created_at: string | null
+          feedback: string | null
+          id: string
+          respondent_email: string | null
+          score: number
+          survey_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          feedback?: string | null
+          id?: string
+          respondent_email?: string | null
+          score: number
+          survey_id: string
+        }
+        Update: {
+          created_at?: string | null
+          feedback?: string | null
+          id?: string
+          respondent_email?: string | null
+          score?: number
+          survey_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "nps_responses_survey_id_fkey"
+            columns: ["survey_id"]
+            isOneToOne: false
+            referencedRelation: "nps_surveys"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      nps_surveys: {
+        Row: {
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          question: string
+          title: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          question: string
+          title: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          question?: string
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      opportunities: {
+        Row: {
+          close_date: string | null
+          contact_id: string | null
+          created_at: string | null
+          id: string
+          notes: string | null
+          probability: number | null
+          stage: string | null
+          title: string
+          updated_at: string | null
+          user_id: string
+          value: number | null
+        }
+        Insert: {
+          close_date?: string | null
+          contact_id?: string | null
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          probability?: number | null
+          stage?: string | null
+          title: string
+          updated_at?: string | null
+          user_id: string
+          value?: number | null
+        }
+        Update: {
+          close_date?: string | null
+          contact_id?: string | null
+          created_at?: string | null
+          id?: string
+          notes?: string | null
+          probability?: number | null
+          stage?: string | null
+          title?: string
+          updated_at?: string | null
+          user_id?: string
+          value?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "opportunities_contact_id_fkey"
+            columns: ["contact_id"]
+            isOneToOne: false
+            referencedRelation: "crm_contacts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          created_at: string | null
+          full_name: string | null
+          id: string
+          updated_at: string | null
+          username: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          created_at?: string | null
+          full_name?: string | null
+          id: string
+          updated_at?: string | null
+          username?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          created_at?: string | null
+          full_name?: string | null
+          id?: string
+          updated_at?: string | null
+          username?: string | null
+        }
+        Relationships: []
+      }
+      social_accounts: {
+        Row: {
+          access_token: string | null
+          account_id: string
+          account_name: string
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          platform: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          access_token?: string | null
+          account_id: string
+          account_name: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          platform: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          access_token?: string | null
+          account_id?: string
+          account_name?: string
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          platform?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       User: {
         Row: {
           createdAt: string
